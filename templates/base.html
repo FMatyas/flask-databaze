@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Produkty{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="animated-bg" aria-hidden="true"></div>
+    <div class="app-wrap">
+        <nav class="nav">
+            <div class="brand">✨ Databáze</div>
+            <div class="nav-actions">
+                <a class="button small" href="{{ url_for('index') }}">Seznam</a>
+                <a class="button small" href="{{ url_for('add_product') }}">Přidat</a>
+            </div>
+        </nav>
+
+        <header class="hero">
+            <div class="hero-content">
+                <h1>{% block header %}Správa produktů{% endblock %}</h1>
+                <p class="lead">Elegantní rozhraní pro správu produktů — rychle, krásně, bezpečně.</p>
+            </div>
+            <svg class="hero-decor" viewBox="0 0 600 200" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#7ee8fa" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#4facfe" stop-opacity="0.05"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,100 C150,200 350,0 600,100 L600 00 L0 0 Z" fill="url(#g1)"/>
+            </svg>
+        </header>
+
+        <main class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="toasts"> 
+                  {% for category, msg in messages %}
+                    <div class="toast {{ category }}">{{ msg }}</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="site-footer">© {{ current_year }} Databaze — made with ❤️</footer>
+    </div>
+</body>
+</html>

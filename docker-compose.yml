@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    image: flask-app:local
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - SQLALCHEMY_DATABASE_URI=sqlite:///products.db
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - migrate
+
+  migrate:
+    build: .
+    image: flask-app:local
+    command: sh -c "flask db upgrade"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - SQLALCHEMY_DATABASE_URI=sqlite:///products.db
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - ./:/app
+    entrypoint: ["sh", "-c"]
+
+# Optionally add a Postgres service for production testing
+# db:
+#   image: postgres:15
+#   environment:
+#     - POSTGRES_USER=postgres
+#     - POSTGRES_PASSWORD=postgres
+#     - POSTGRES_DB=products
+#   volumes:
+#     - pgdata:/var/lib/postgresql/data
+
+#volumes:
+#  pgdata:
+#    driver: local

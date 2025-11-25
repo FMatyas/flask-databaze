@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if product %}Upravit produkt{% else %}Přidat produkt{% endif %}</title>
+</head>
+<body>
+    <h1>{% if product %}Upravit produkt{% else %}Přidat produkt{% endif %}</h1>
+    {% extends 'base.html' %}
+    {% import 'macros.html' as forms %}
+    {% block content %}
+    <div class="card">
+        <form method="post">
+            {{ form.hidden_tag() }}
+            {{ forms.render_field(form.name, 'Název produktu') }}
+            {{ forms.render_field(form.price, 'Cena v CZK') }}
+            {{ forms.render_field(form.dph, 'DPH') }}
+            {{ forms.render_field(form.description, 'Krátký popis') }}
+            <div class="form-row">
+                <button class="button" type="submit">Uložit</button>
+                <a class="button" href="{{ url_for('index') }}" style="background:linear-gradient(90deg,#9be15d,#00e3a0);">Zpět</a>
+            </div>
+        </form>
+    </div>
+    {% endblock %}
+</body>
+</html>
