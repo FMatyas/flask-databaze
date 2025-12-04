@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFError
 import os
 
 app = Flask(__name__)
@@ -63,6 +64,12 @@ def delete_product(id):
     db.session.delete(product)
     db.session.commit()
     flash('Produkt smazán', 'info')
+    return redirect(url_for('index'))
+
+@app.errorhandler(CSRFError)
+def handle_csrf(e):
+    # flash a friendly message and redirect to index
+    flash('Neplatný CSRF token. Prosím obnovte stránku a zkuste to znovu.', 'error')
     return redirect(url_for('index'))
 
 @app.context_processor
