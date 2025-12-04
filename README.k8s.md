@@ -72,3 +72,31 @@ Troubleshooting
 - If using SQLite on multi-replica pods you may hit file locking issues. Prefer a proper DB (Postgres/MySQL) in multi-instance production.
 - If `initContainer` fails, inspect logs: `kubectl logs deploy/flask-app -c migrate`.
 
+Troubleshooting CSRF and env vars on Kubernetes
+
+If clicking delete in the app on Kubernetes returns you to the page or fails silently, check the following:
+
+1) Secret and ConfigMap are applied
+
+  kubectl get configmap flask-config -o yaml
+  kubectl get secret flask-secret -o yaml
+
+2) Check pod environment variables
+
+  kubectl exec deploy/flask-app -- printenv | grep -E "SECRET_KEY|SQLALCHEMY_DATABASE_URI|FLASK_ENV"
+
+3) Inspect logs for CSRF errors
+
+  kubectl logs deploy/flask-app
+  kubectl logs deploy/flask-app -c migrate
+
+4) Verify cookies and session affinity in browser
+
+  - Ensure cookies are set by the app (inspect DevTools -> Application -> Cookies)
+  - If using LoadBalancer / Ingress, ensure session stickiness or use central DB for sessions.
+
+5) Temporary workaround for debugging
+
+  - You can disable CSRF locally (not for production): set `WTF_CSRF_ENABLED=False` in env.
+  - For production, verify `SECRET_KEY` consistency across pods (use Secret).
+
